@@ -1,0 +1,77 @@
+"use client";
+
+import { AuthLayout } from "@/components/auth/auth-layout";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Github } from "lucide-react"; // Using Lucide's Github icon
+import Link from "next/link";
+import { motion } from "framer-motion";
+
+export default function LoginPage() {
+    return (
+        <AuthLayout>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="w-full rounded-2xl border border-white/10 bg-black/50 backdrop-blur-xl p-8 shadow-2xl"
+            >
+                <div className="flex flex-col items-center mb-8">
+                    <div className="h-10 w-10 rounded bg-primary shadow-[0_0_15px_var(--primary)] mb-4" />
+                    <h1 className="text-2xl font-bold tracking-tight text-white">Welcome back</h1>
+                    <p className="text-sm text-muted-foreground mt-2 text-center">
+                        Enter your details to access your mastery paths.
+                    </p>
+                </div>
+
+                <div className="space-y-4">
+                    <Button variant="outline" className="w-full h-11 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white relative">
+                        {/* Simple Google G Logo SVG */}
+                        <svg className="mr-2 h-4 w-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg>
+                        Continue with Google
+                    </Button>
+                    <Button variant="outline" className="w-full h-11 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white">
+                        <Github className="mr-2 h-4 w-4" />
+                        Continue with GitHub
+                    </Button>
+                </div>
+
+                <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-white/10" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-black/50 px-2 text-muted-foreground backdrop-blur-xl">Or continue with</span>
+                    </div>
+                </div>
+
+                <form className="space-y-4">
+                    <div className="space-y-2">
+                        <Input
+                            type="email"
+                            placeholder="name@example.com"
+                            className="h-11 bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/50"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Input
+                            type="password"
+                            placeholder="Password"
+                            className="h-11 bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/50"
+                        />
+                    </div>
+                    <Button className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(15,118,110,0.3)] transition-all hover:shadow-[0_0_30px_rgba(15,118,110,0.5)] border-none">
+                        Sign In
+                    </Button>
+                </form>
+
+                <div className="mt-6 text-center text-sm text-muted-foreground">
+                    Don&apos;t have an account?{" "}
+                    <Link href="/signup" className="text-primary hover:underline underline-offset-4 hover:text-primary/80 transition-colors">
+                        Sign up
+                    </Link>
+                </div>
+            </motion.div>
+        </AuthLayout>
+    );
+}
