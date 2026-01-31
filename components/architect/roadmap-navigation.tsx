@@ -1,19 +1,21 @@
 "use client";
 
 import * as React from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { RoadmapNavItem } from "./roadmap-nav-item";
 import { RoadmapSkeleton } from "./roadmap-skeleton";
 import { Roadmap } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Map, Plus, Command, LayoutGrid } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 interface RoadmapNavigationProps {
     roadmap?: Roadmap;
     isLoading?: boolean;
+    onStartArchitecture?: () => void;
 }
 
-export function RoadmapNavigation({ roadmap, isLoading = false }: RoadmapNavigationProps) {
+export function RoadmapNavigation({ roadmap, isLoading = false, onStartArchitecture }: RoadmapNavigationProps) {
     // Calculate stats
     const stats = React.useMemo(() => {
         if (!roadmap) return { topics: 0, exercises: 0 };
@@ -35,81 +37,109 @@ export function RoadmapNavigation({ roadmap, isLoading = false }: RoadmapNavigat
         return countNodes(roadmap.nodes);
     }, [roadmap]);
 
-    if (isLoading) {
+    if (!roadmap && !isLoading) {
         return (
-            <Card className="w-[30%] h-[80%] shadow-2xl border-border backdrop-blur-xl bg-card/80">
-                <CardHeader className="border-b border-border/50">
-                    <div className="flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary animate-pulse" />
-                        <CardTitle className="text-lg bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                            Generating Roadmap...
-                        </CardTitle>
-                    </div>
-                    <CardDescription>AI is structuring your learning path</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6">
-                    <RoadmapSkeleton />
-                </CardContent>
-            </Card>
+            <div className="h-full w-full flex flex-col items-center justify-center p-8 text-center bg-muted/5 border-l border-border/40">
+                <div className="h-16 w-16 mb-6 rounded-2xl bg-muted/50 border border-border/50 flex items-center justify-center">
+                    <LayoutGrid className="h-8 w-8 text-muted-foreground/40" />
+                </div>
+                <h3 className="text-lg font-medium tracking-tight mb-2">No Blueprint Yet</h3>
+                <p className="text-muted-foreground text-sm max-w-[200px] leading-relaxed mb-6">
+                    Start a conversation with the Architect to generate your learning path.
+                </p>
+                <button
+                    onClick={onStartArchitecture}
+                    className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary/10 text-primary-foreground hover:bg-primary/20 h-10 px-4 py-2"
+                >
+                    <span className="text-primary font-semibold">Start Architecture</span>
+                </button>
+            </div>
         );
     }
 
-    if (!roadmap) {
+    if (isLoading && (!roadmap || roadmap.nodes.length === 0)) {
         return (
-            <Card className="w-[30%] h-[80%] shadow-2xl border-border backdrop-blur-xl bg-card/80">
-                <CardHeader className="border-b border-border/50">
-                    <CardTitle className="text-lg">Learning Roadmap</CardTitle>
-                    <CardDescription>Start a conversation to generate your path</CardDescription>
-                </CardHeader>
-                <CardContent className="pt-6 flex items-center justify-center h-[calc(100%-5rem)]">
-                    <div className="text-center space-y-2 opacity-50">
-                        <p className="text-sm text-muted-foreground">No roadmap generated yet</p>
-                        <p className="text-xs text-muted-foreground">Send a message to begin</p>
+            <div className="h-full w-full bg-muted/5 border-l border-border/40 flex flex-col">
+                <div className="h-14 flex items-center px-4 border-b border-border/40 bg-background/50 backdrop-blur-sm">
+                    <div className="flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                        <span className="text-sm font-medium animate-pulse">Designing Structure...</span>
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+                <div className="p-4">
+                    <div className="space-y-4">
+                        {/* Sidebar Skeleton */}
+                        <div className="h-4 w-3/4 bg-muted rounded animate-pulse" />
+                        <div className="h-8 w-full bg-muted/50 rounded animate-pulse" />
+                        <div className="space-y-2 pl-4">
+                            <div className="h-4 w-full bg-muted/30 rounded animate-pulse" />
+                            <div className="h-4 w-5/6 bg-muted/30 rounded animate-pulse" />
+                            <div className="h-4 w-4/6 bg-muted/30 rounded animate-pulse" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         );
     }
 
     return (
-        <Card className="w-[30%] h-[80%] shadow-2xl border-border backdrop-blur-xl bg-card/80 flex flex-col relative overflow-hidden">
-            {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent pointer-events-none" />
-
-            {/* Progress bar on left edge */}
-            <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20" />
-
-            <CardHeader className="border-b border-border/50 flex-none relative z-10">
-                <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text">
-                        {roadmap.title}
-                    </CardTitle>
-                    {(stats.topics > 0 || stats.exercises > 0) && (
-                        <div className="flex items-center gap-2 text-xs">
-                            {stats.topics > 0 && (
-                                <span className="px-2 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                                    {stats.topics} topics
-                                </span>
-                            )}
-                            {stats.exercises > 0 && (
-                                <span className="px-2 py-1 rounded-full bg-accent/10 text-accent font-medium">
-                                    {stats.exercises} exercises
-                                </span>
-                            )}
-                        </div>
-                    )}
+        <div className="h-full w-full bg-sidebar/50 border-l border-border/40 flex flex-col">
+            {/* Sidebar Header */}
+            <div className="h-14 flex-none flex items-center justify-between px-4 border-b border-border/40 bg-background/50 backdrop-blur-sm">
+                <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
+                        <Map className="h-3.5 w-3.5 text-primary" />
+                    </div>
+                    <span className="text-sm font-semibold truncate text-foreground/90 tracking-tight">
+                        {roadmap?.title || "Untitled Blueprint"}
+                    </span>
                 </div>
-                <CardDescription>{roadmap.description}</CardDescription>
-            </CardHeader>
-            <CardContent className="pt-4 flex-1 min-h-0 relative z-10">
-                <ScrollArea className="h-full pr-2">
-                    <div className="space-y-1">
-                        {roadmap.nodes.map((node, index) => (
-                            <RoadmapNavItem key={node.id} node={node} index={index} />
-                        ))}
+            </div>
+
+            {/* Sidebar Stats */}
+            {roadmap && (
+                <div className="px-4 py-3 border-b border-border/20 bg-muted/5">
+                    <div className="flex items-center gap-3 text-[11px] font-medium text-muted-foreground/70 uppercase tracking-wider">
+                        <span className="flex items-center gap-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full bg-primary/60" />
+                            {stats.topics} Modules
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                            <span className="h-1.5 w-1.5 rounded-full bg-accent-foreground/50" />
+                            {stats.exercises} Nodes
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {/* Content Tree */}
+            <div className="flex-1 min-h-0 overflow-hidden">
+                <ScrollArea className="h-full">
+                    <div className="p-3">
+                        <div className="space-y-0.5">
+                            <div className="px-2 py-1.5 mb-2">
+                                <h4 className="text-[10px] uppercase tracking-wider font-semibold text-muted-foreground/40">
+                                    Structure
+                                </h4>
+                            </div>
+                            {roadmap?.nodes.map((node, index) => (
+                                <RoadmapNavItem key={node.id} node={node} index={index} />
+                            ))}
+                        </div>
                     </div>
                 </ScrollArea>
-            </CardContent>
-        </Card>
+            </div>
+
+            {/* Sidebar Footer */}
+            <div className="p-3 border-t border-border/40 bg-background/30">
+                <button className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors group">
+                    <div className="h-5 w-5 rounded border border-border flex items-center justify-center bg-background group-hover:border-primary/50 transition-colors">
+                        <Plus className="h-3 w-3" />
+                    </div>
+                    <span>Add Pattern</span>
+                    <span className="ml-auto text-[10px] opacity-50"><kbd className="font-sans">Cmd+K</kbd></span>
+                </button>
+            </div>
+        </div>
     );
 }

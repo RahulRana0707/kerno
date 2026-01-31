@@ -65,7 +65,6 @@ Kerno is a **structure‑first learning engine** that converts intent into a mas
 1. **Intent Declaration**
 
    * User states topic
-   * Sets depth (overview → practitioner → expert → research)
 
 2. **Architect Phase**
 
@@ -197,7 +196,6 @@ ContentBlock
 * Generate structure
 * Generate content per node
 * Cite sources
-* Adapt depth dynamically
 
 ### Non‑Goals (MVP)
 

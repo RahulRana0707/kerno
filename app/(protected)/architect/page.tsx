@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { ArchitectShell } from "@/components/architect/architect-shell";
 
 export default function ArchitectPage() {
@@ -9,7 +10,9 @@ export default function ArchitectPage() {
          Note: We might want a specialized Header for this view later, 
          or just use the Shell's internal layout.
        */}
-            <ArchitectShell />
+            <React.Suspense fallback={<div className="flex items-center justify-center h-full text-muted-foreground">Loading Architect...</div>}>
+                <ArchitectShell />
+            </React.Suspense>
         </main>
     );
 }
