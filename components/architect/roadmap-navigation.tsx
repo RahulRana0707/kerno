@@ -4,7 +4,7 @@ import * as React from "react";
 import { RoadmapNavItem } from "./roadmap-nav-item";
 import { Roadmap, RoadmapNode } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles, Map, Plus, LayoutGrid } from "lucide-react";
+import { Icons } from "@/components/icons";
 
 interface RoadmapNavigationProps {
     roadmap?: Roadmap;
@@ -38,7 +38,7 @@ export function RoadmapNavigation({ roadmap, isLoading = false, onStartArchitect
         return (
             <div className="h-full w-full flex flex-col items-center justify-center p-8 text-center bg-muted/5 border-l border-border/40">
                 <div className="h-16 w-16 mb-6 rounded-2xl bg-muted/50 border border-border/50 flex items-center justify-center">
-                    <LayoutGrid className="h-8 w-8 text-muted-foreground/40" />
+                    <Icons.layoutGrid className="h-8 w-8 text-muted-foreground/40" />
                 </div>
                 <h3 className="text-lg font-medium tracking-tight mb-2">No Blueprint Yet</h3>
                 <p className="text-muted-foreground text-sm max-w-[200px] leading-relaxed mb-6">
@@ -59,7 +59,7 @@ export function RoadmapNavigation({ roadmap, isLoading = false, onStartArchitect
             <div className="h-full w-full bg-muted/5 border-l border-border/40 flex flex-col">
                 <div className="h-14 flex items-center px-4 border-b border-border/40 bg-background/50 backdrop-blur-sm">
                     <div className="flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                        <Icons.sparkles className="h-4 w-4 text-primary animate-pulse" />
                         <span className="text-sm font-medium animate-pulse">Designing Structure...</span>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ export function RoadmapNavigation({ roadmap, isLoading = false, onStartArchitect
             <div className="h-14 flex-none flex items-center justify-between px-4 border-b border-border/40 bg-background/50 backdrop-blur-sm">
                 <div className="flex items-center gap-2.5 min-w-0">
                     <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center border border-primary/20 shrink-0">
-                        <Map className="h-3.5 w-3.5 text-primary" />
+                        <Icons.map className="h-3.5 w-3.5 text-primary" />
                     </div>
                     <span className="text-sm font-semibold truncate text-foreground/90 tracking-tight">
                         {roadmap?.title || "Untitled Blueprint"}
@@ -131,7 +131,7 @@ export function RoadmapNavigation({ roadmap, isLoading = false, onStartArchitect
             <div className="p-3 border-t border-border/40 bg-background/30">
                 <button className="flex items-center gap-2 w-full px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors group">
                     <div className="h-5 w-5 rounded border border-border flex items-center justify-center bg-background group-hover:border-primary/50 transition-colors">
-                        <Plus className="h-3 w-3" />
+                        <Icons.plus className="h-3 w-3" />
                     </div>
                     <span>Add Pattern</span>
                     <span className="ml-auto text-[10px] opacity-50"><kbd className="font-sans">Cmd+K</kbd></span>

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Brain, Network, ShieldCheck } from "lucide-react";
+import { Icons } from "@/components/icons";
 
 export function BentoGridSection() {
     return (
@@ -46,7 +46,7 @@ export function BentoGridSection() {
                     </div>
                     <div className="order-1 md:order-2">
                         <div className="inline-flex items-center gap-2 text-primary font-medium mb-4">
-                            <Network className="h-5 w-5" />
+                            <Icons.network className="h-5 w-5" />
                             <span>Visible Architecture</span>
                         </div>
                         <h3 className="text-3xl font-bold mb-4">See the Territory.</h3>
@@ -68,7 +68,7 @@ export function BentoGridSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div>
                         <div className="inline-flex items-center gap-2 text-sky-400 font-medium mb-4">
-                            <ShieldCheck className="h-5 w-5" />
+                            <Icons.shieldCheck className="h-4 w-4" />
                             <span>Active Recall Gates</span>
                         </div>
                         <h3 className="text-3xl font-bold mb-4">Prove Your Work.</h3>
@@ -86,17 +86,17 @@ export function BentoGridSection() {
                     </div>
                     <div>
                         <div className="relative rounded-3xl border border-white/10 bg-zinc-950/50 aspect-square md:aspect-[4/3] overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-bl from-sky-500/10 via-transparent to-transparent" />
+                            <div className="absolute inset-0 bg-linear-to-bl from-sky-500/10 via-transparent to-transparent" />
                             <div className="absolute inset-0 flex flex-col items-center justify-center p-8">
                                 <div className="w-full max-w-sm p-4 rounded-xl border border-red-500/30 bg-red-900/10 backdrop-blur-sm mb-4">
                                     <div className="flex items-center gap-3 text-red-200 text-sm">
-                                        <ShieldCheck className="h-4 w-4" />
+                                        <Icons.shieldCheck className="h-4 w-4" />
                                         <span>Locked: Complete &quot;Basics&quot; first</span>
                                     </div>
                                 </div>
                                 <div className="w-full max-w-sm p-4 rounded-xl border border-green-500/30 bg-green-900/10 backdrop-blur-sm">
                                     <div className="flex items-center gap-3 text-green-200 text-sm">
-                                        <Brain className="h-4 w-4" />
+                                        <Icons.brain className="h-4 w-4" />
                                         <span>Unlocked: First Principles</span>
                                     </div>
                                 </div>

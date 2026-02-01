@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Check, RotateCw } from "lucide-react";
+import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 
 interface RoadmapSummaryCardProps {
@@ -34,7 +34,7 @@ export function RoadmapSummaryCard({
                             <div className="h-5 w-48 bg-primary/20 animate-pulse rounded" />
                         ) : (
                             <>
-                                <Sparkles className={cn("h-4 w-4 text-primary shrink-0", isGenerating && "animate-pulse")} />
+                                <Icons.sparkles className={cn("h-4 w-4 text-primary shrink-0", isGenerating && "animate-pulse")} />
                                 {roadmap?.title || "New Blueprint"}
                             </>
                         )}
@@ -104,13 +104,13 @@ export function RoadmapSummaryCard({
                     >
                         {isGenerating ? (
                             <span className="flex items-center gap-2">
-                                <RotateCw className="h-3 w-3 animate-spin" />
+                                <Icons.rotateCw className="h-3 w-3 animate-spin" />
                                 <span className="hidden sm:inline">Building...</span>
                             </span>
                         ) : (
                             <span className="flex items-center gap-2">
                                 Construct I
-                                <Check className="h-3.5 w-3.5 ml-1" />
+                                <Icons.check className="h-3.5 w-3.5 ml-1" />
                             </span>
                         )}
                     </Button>

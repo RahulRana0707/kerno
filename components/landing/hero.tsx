@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Search, Sparkles } from "lucide-react";
+import { Icons } from "@/components/icons";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { MovingBorder } from "@/components/ui/moving-border";
@@ -22,7 +22,7 @@ export function Hero() {
                 transition={{ delay: 0.2, duration: 0.8 }}
                 className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/50 px-3 py-1 text-sm text-muted-foreground backdrop-blur-md"
             >
-                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                <Icons.sparkles className="h-3.5 w-3.5 text-primary" />
                 <span>Structure-First Learning Engine</span>
             </motion.div>
 
@@ -70,7 +70,7 @@ export function Hero() {
                     {/* The Content Layer */}
                     <div className={`relative flex items-center gap-2 rounded-2xl bg-background/80 p-2 backdrop-blur-xl transition-all duration-300 ${isFocused ? 'ring-2 ring-primary border-transparent shadow-lg shadow-primary/20' : 'border border-input/50 shadow-2xl'}`}>
                         <div className="pl-3 text-muted-foreground">
-                            <Search className="h-5 w-5" />
+                            <Icons.search className="h-5 w-5" />
                         </div>
                         <Input
                             className="flex-1 border-none bg-transparent shadow-none focus-visible:ring-0 text-base h-12 placeholder:text-muted-foreground/50"
@@ -83,7 +83,7 @@ export function Hero() {
                         <Link href="/signup">
                             <Button size="lg" className="rounded-xl px-6 font-medium bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_0_20px_rgba(15,118,110,0.3)] transition-all hover:shadow-[0_0_30px_rgba(15,118,110,0.5)]">
                                 Architect Path
-                                <ArrowRight className="ml-2 h-4 w-4" />
+                                <Icons.arrowRight className="ml-2 h-4 w-4" />
                             </Button>
                         </Link>
                     </div>

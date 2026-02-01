@@ -8,7 +8,7 @@ import { IntentInput } from "@/components/architect/intent-input";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Hammer } from "lucide-react";
+import { Icons } from "@/components/icons";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { SUGGESTIONS } from "@/lib/constants";
 import { useRoadmapState } from "@/hooks/use-roadmap-state";
@@ -113,7 +113,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                                     <div className="mb-8 relative group cursor-default">
                                         <div className="absolute -inset-4 bg-linear-to-r from-primary/20 to-purple-500/20 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-1000" />
                                         <div className="relative h-20 w-20 rounded-[2rem] bg-linear-to-tr from-background to-muted border border-border/50 flex items-center justify-center shadow-2xl">
-                                            <Hammer className="h-8 w-8 text-primary/80" />
+                                            <Icons.hammer className="h-8 w-8 text-primary/80" />
                                         </div>
                                     </div>
 
@@ -284,7 +284,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                                         >
                                             <div className="flex-none flex flex-col items-center">
                                                 <div className="h-8 w-8 rounded-lg bg-linear-to-tr from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner mt-0.5 animate-pulse">
-                                                    <Sparkles className="h-4 w-4 text-primary animate-spin-slow" />
+                                                    <Icons.sparkles className="h-4 w-4 text-primary animate-spin-slow" />
                                                 </div>
                                             </div>
 

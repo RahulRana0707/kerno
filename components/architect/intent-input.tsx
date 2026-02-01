@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Mic, Plus, Pencil, ArrowUp } from "lucide-react";
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
@@ -51,7 +51,7 @@ export const IntentInput = React.forwardRef<HTMLTextAreaElement, IntentInputProp
                             className="text-muted-foreground hover:text-foreground h-8 w-8 rounded-lg hover:bg-foreground/5 transition-colors"
                             disabled={isLoading}
                         >
-                            <Plus className="h-4 w-4" />
+                            <Icons.plus className="h-4 w-4" />
                         </Button>
                         <Button
                             variant="ghost"
@@ -59,7 +59,7 @@ export const IntentInput = React.forwardRef<HTMLTextAreaElement, IntentInputProp
                             className="text-muted-foreground hover:text-foreground h-8 w-8 rounded-lg hover:bg-foreground/5 transition-colors"
                             disabled={isLoading}
                         >
-                            <Mic className="h-4 w-4" />
+                            <Icons.mic className="h-4 w-4" />
                         </Button>
                         <Button
                             variant="ghost"
@@ -67,7 +67,7 @@ export const IntentInput = React.forwardRef<HTMLTextAreaElement, IntentInputProp
                             className="text-muted-foreground hover:text-foreground h-8 w-8 rounded-lg hover:bg-foreground/5 transition-colors"
                             disabled={isLoading}
                         >
-                            <Pencil className="h-4 w-4" />
+                            <Icons.pencil className="h-4 w-4" />
                         </Button>
                     </div>
 
@@ -90,7 +90,7 @@ export const IntentInput = React.forwardRef<HTMLTextAreaElement, IntentInputProp
                                 {isLoading ? (
                                     <div className="h-3 w-3 border-2 border-black/20 border-t-black rounded-full animate-spin" />
                                 ) : (
-                                    <ArrowUp className="h-4 w-4 stroke-[2.5px]" />
+                                    <Icons.arrowUp className="h-4 w-4 stroke-[2.5px]" />
                                 )}
                             </Button>
                         </motion.div>

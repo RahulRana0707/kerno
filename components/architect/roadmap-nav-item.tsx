@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, BookOpen, Target, FileText } from "lucide-react";
+import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { RoadmapNode } from "@/lib/types";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,11 +19,11 @@ export function RoadmapNavItem({ node, level = 0, index = 0 }: RoadmapNavItemPro
     const getIcon = () => {
         switch (node.type) {
             case "exercise":
-                return <Target className="h-3.5 w-3.5 text-primary" />;
+                return <Icons.target className="h-3.5 w-3.5 text-primary" />;
             case "section":
-                return <BookOpen className="h-3.5 w-3.5 text-muted-foreground" />;
+                return <Icons.bookOpen className="h-3.5 w-3.5 text-muted-foreground" />;
             default:
-                return <FileText className="h-3.5 w-3.5 text-muted-foreground" />;
+                return <Icons.fileText className="h-3.5 w-3.5 text-muted-foreground" />;
         }
     };
 
@@ -53,7 +53,7 @@ export function RoadmapNavItem({ node, level = 0, index = 0 }: RoadmapNavItemPro
                         animate={{ rotate: isExpanded ? 0 : -90 }}
                         transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
                     >
-                        <ChevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform" />
+                        <Icons.chevronDown className="h-3.5 w-3.5 text-muted-foreground transition-transform" />
                     </motion.div>
                 )}
                 {!hasChildren && <div className="w-3.5 shrink-0" />}

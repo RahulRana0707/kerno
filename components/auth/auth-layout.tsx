@@ -1,6 +1,6 @@
 import { GridBackground } from "@/components/landing/grid-background";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { Icons } from "@/components/icons";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
     return (
@@ -13,7 +13,7 @@ export function AuthLayout({ children }: { children: React.ReactNode }) {
                     href="/"
                     className="flex items-center gap-2 text-sm text-muted-foreground hover:text-white transition-colors px-4 py-2 rounded-full border border-transparent hover:border-white/10 hover:bg-black/20"
                 >
-                    <ArrowLeft className="h-4 w-4" />
+                    <Icons.arrowLeft className="h-4 w-4" />
                     <span>Back</span>
                 </Link>
             </div>
