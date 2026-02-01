@@ -1,9 +1,8 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import React from "react";
 import { motion } from "framer-motion";
-import { Brain, Network, Layers, ShieldCheck, ChevronRight } from "lucide-react";
+import { Brain, Network, ShieldCheck } from "lucide-react";
 
 export function BentoGridSection() {
     return (
@@ -22,7 +21,7 @@ export function BentoGridSection() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     <div className="order-2 md:order-1">
                         <div className="relative rounded-3xl border border-white/10 bg-zinc-950/50 aspect-square md:aspect-[4/3] overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-50" />
+                            <div className="absolute inset-0 bg-linear-to-br from-primary/20 via-transparent to-transparent opacity-50" />
 
                             {/* Abstract Graph Visualization */}
                             <div className="absolute inset-0 flex items-center justify-center">
@@ -52,7 +51,7 @@ export function BentoGridSection() {
                         </div>
                         <h3 className="text-3xl font-bold mb-4">See the Territory.</h3>
                         <p className="text-lg text-muted-foreground leading-relaxed mb-6">
-                            You can't master what you can't see. Kerno generates a dynamic dependency graph for every topic, showing you exactly what prerequisites you need and what concepts unlock next.
+                            You can&apos;t master what you can&apos;t see. Kerno generates a dynamic dependency graph for every topic, showing you exactly what prerequisites you need and what concepts unlock next.
                         </p>
                         <ul className="space-y-3">
                             {['Dynamic Prerequisites', 'Concept Clustering', 'Visual Progress Tracking'].map(item => (
@@ -92,7 +91,7 @@ export function BentoGridSection() {
                                 <div className="w-full max-w-sm p-4 rounded-xl border border-red-500/30 bg-red-900/10 backdrop-blur-sm mb-4">
                                     <div className="flex items-center gap-3 text-red-200 text-sm">
                                         <ShieldCheck className="h-4 w-4" />
-                                        <span>Locked: Complete "Basics" first</span>
+                                        <span>Locked: Complete &quot;Basics&quot; first</span>
                                     </div>
                                 </div>
                                 <div className="w-full max-w-sm p-4 rounded-xl border border-green-500/30 bg-green-900/10 backdrop-blur-sm">

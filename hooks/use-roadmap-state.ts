@@ -1,17 +1,13 @@
 import { create } from 'zustand';
-import { Roadmap, RoadmapNode } from '@/lib/types';
+import { Roadmap } from '@/lib/types';
 import { buildRoadmapTree } from '@/lib/roadmap-utils';
 
 interface RoadmapState {
     roadmap: Roadmap | null;
     isGenerating: boolean;
-    isLocked: boolean;
-    phase: 'architect' | 'immersion';
     error: string | null;
-    setRoadmap: (roadmap: any) => void;
+    setRoadmap: (roadmap: Partial<Roadmap>) => void;
     setGenerating: (generating: boolean) => void;
-    setLocked: (locked: boolean) => void;
-    setPhase: (phase: 'architect' | 'immersion') => void;
     setError: (error: string | null) => void;
     reset: () => void;
 }
@@ -19,27 +15,23 @@ interface RoadmapState {
 export const useRoadmapState = create<RoadmapState>((set) => ({
     roadmap: null,
     isGenerating: false,
-    isLocked: false,
-    phase: 'architect',
     error: null,
     setRoadmap: (data) => {
-        if (!data) {
-            set({ roadmap: null, error: null, isLocked: false });
+        if (!data || !data.nodes) {
+            set({ roadmap: null, error: null });
             return;
         }
 
         const transformedNodes = buildRoadmapTree(data.nodes);
         console.log(transformedNodes)
-        const transformedRoadmap: Roadmap = {
+        const transformedRoadmap = {
             ...data,
             nodes: transformedNodes,
-        };
+        } as Roadmap;
 
         set({ roadmap: transformedRoadmap, error: null });
     },
     setGenerating: (generating) => set({ isGenerating: generating }),
-    setLocked: (locked) => set({ isLocked: locked }),
-    setPhase: (phase) => set({ phase }),
     setError: (error) => set({ error, isGenerating: false }),
-    reset: () => set({ roadmap: null, isGenerating: false, isLocked: false, phase: 'architect', error: null }),
+    reset: () => set({ roadmap: null, isGenerating: false, error: null }),
 }));

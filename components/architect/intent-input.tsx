@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { CornerDownLeft, Paperclip, Mic, Plus, Pencil, ArrowUp } from "lucide-react";
+import { Mic, Plus, Pencil, ArrowUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { motion } from "framer-motion";
@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 interface IntentInputProps {
     input: string;
     handleInputChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    handleSubmit: (e: React.FormEvent<HTMLFormElement> | React.KeyboardEvent<HTMLTextAreaElement>) => void;
+    handleSubmit: (e: React.MouseEvent<HTMLButtonElement, MouseEvent> | React.KeyboardEvent<HTMLTextAreaElement>) => void;
     isLoading: boolean;
 }
 
@@ -78,7 +78,7 @@ export const IntentInput = React.forwardRef<HTMLTextAreaElement, IntentInputProp
                         >
                             <Button
                                 size="icon"
-                                onClick={(e) => handleSubmit(e as any)}
+                                onClick={(e) => handleSubmit(e)}
                                 disabled={isLoading || !input.trim()}
                                 className={cn(
                                     "h-8 w-8 rounded-xl transition-all duration-500 shadow-xl border border-border",

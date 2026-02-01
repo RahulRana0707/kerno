@@ -2,12 +2,9 @@
 
 import * as React from "react";
 import { RoadmapNavItem } from "./roadmap-nav-item";
-import { RoadmapSkeleton } from "./roadmap-skeleton";
-import { Roadmap } from "@/lib/types";
+import { Roadmap, RoadmapNode } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles, Map, Plus, Command, LayoutGrid } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { Sparkles, Map, Plus, LayoutGrid } from "lucide-react";
 
 interface RoadmapNavigationProps {
     roadmap?: Roadmap;
@@ -16,11 +13,11 @@ interface RoadmapNavigationProps {
 }
 
 export function RoadmapNavigation({ roadmap, isLoading = false, onStartArchitecture }: RoadmapNavigationProps) {
-    // Calculate stats
+
     const stats = React.useMemo(() => {
         if (!roadmap) return { topics: 0, exercises: 0 };
 
-        const countNodes = (nodes: any[]): { topics: number; exercises: number } => {
+        const countNodes = (nodes: RoadmapNode[]): { topics: number; exercises: number } => {
             return nodes.reduce((acc, node) => {
                 if (node.type === "exercise") acc.exercises++;
                 else if (node.type === "topic") acc.topics++;

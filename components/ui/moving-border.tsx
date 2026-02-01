@@ -8,6 +8,7 @@ import {
     useTransform,
 } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { TODO } from "@/lib/types";
 
 export function MovingBorder({
     children,
@@ -20,9 +21,9 @@ export function MovingBorder({
     duration?: number;
     rx?: string;
     ry?: string;
-    [key: string]: any;
+    [key: string]: TODO;
 }) {
-    const pathRef = useRef<any>(null);
+    const pathRef = useRef<TODO>(null);
     const progress = useMotionValue<number>(0);
 
     useAnimationFrame((time) => {
@@ -86,7 +87,7 @@ export const MovingBorderBtn = ({
     duration,
     className, // This captures the inner button classes
     ...otherProps
-}: any) => {
+}: TODO) => {
     return (
         <Component
             className={cn(
@@ -110,7 +111,7 @@ export const MovingBorderBtn = ({
 
             <div
                 className={cn(
-                    "relative bg-slate-900/[0.8] border border-slate-800 backdrop-blur-xl text-white flex items-center justify-center w-full h-full text-sm antialiased",
+                    "relative bg-slate-900/80 border border-slate-800 backdrop-blur-xl text-white flex items-center justify-center w-full h-full text-sm antialiased",
                     className
                 )}
             >

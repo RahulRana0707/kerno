@@ -16,7 +16,7 @@ export interface FlatNode {
  * Transforms a flat array of nodes with parentId into a recursive tree structure.
  * Maintains the original order of nodes provided by the AI.
  */
-export function buildRoadmapTree(flatNodes: any[]): RoadmapNode[] {
+export function buildRoadmapTree(flatNodes: FlatNode[]): RoadmapNode[] {
     if (!Array.isArray(flatNodes)) return [];
 
     const nodesMap = new Map<string, RoadmapNode>();

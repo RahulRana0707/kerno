@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { ChevronRight, ChevronDown, BookOpen, Target, FileText } from "lucide-react";
+import { ChevronDown, BookOpen, Target, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { RoadmapNode } from "@/lib/types";
 import { motion, AnimatePresence } from "framer-motion";

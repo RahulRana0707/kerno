@@ -3,45 +3,27 @@
 import * as React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Lock, Check, RotateCw } from "lucide-react";
-import { Roadmap } from "@/lib/types";
+import { Sparkles, Check, RotateCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface RoadmapSummaryCardProps {
-    roadmap: any;
-    isLocked: boolean;
+    roadmap: Roadmap;
     isGenerating?: boolean;
 }
 
-import { useRoadmapState } from "@/hooks/use-roadmap-state";
-import { LockConfirmationModal } from "./lock-confirmation-modal";
+import { Roadmap, RoadmapNode } from "@/lib/types";
 
 export function RoadmapSummaryCard({
     roadmap,
-    isLocked,
     isGenerating,
     onView,
     onConstruct
 }: RoadmapSummaryCardProps & {
-    onView?: (roadmap: any) => void;
-    onConstruct?: (roadmap: any) => void;
+    onView?: (roadmap: Roadmap) => void;
+    onConstruct?: (roadmap: Roadmap) => void;
 }) {
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-    const { setLocked, setPhase } = useRoadmapState();
     const nodes = roadmap?.nodes || [];
-    const sections = nodes.filter((n: any) => n.type === 'section');
-
-    const handleLockClick = () => {
-        if (!isLocked && !isGenerating && roadmap?.nodes) {
-            setIsModalOpen(true);
-        }
-    };
-
-    const handleConfirmLock = () => {
-        setLocked(true);
-        setIsModalOpen(false);
-        setPhase('immersion');
-    };
+    const sections = nodes.filter((n: RoadmapNode) => n.type === 'section');
 
     return (
         <Card className="w-full border-primary/10 bg-primary/5 backdrop-blur-3xl overflow-hidden group/roadmap shadow-2xl shadow-primary/5">
@@ -58,7 +40,6 @@ export function RoadmapSummaryCard({
                         )}
                     </CardTitle>
                     <div className="flex items-center gap-2 shrink-0">
-                        {isLocked && <Lock className="h-3.5 w-3.5 text-primary/60" />}
                         {isGenerating && <div className="h-2 w-2 rounded-full bg-primary animate-ping" />}
                     </div>
                 </div>
@@ -78,7 +59,7 @@ export function RoadmapSummaryCard({
                     </p>
                     <div className="flex flex-wrap gap-2">
                         {sections.length > 0 ? (
-                            sections.map((s: any) => (
+                            sections.map((s: RoadmapNode) => (
                                 <div key={s.id} className="px-3 py-1 rounded-full bg-background/60 border border-border/60 text-[11px] font-medium text-foreground/80 shadow-xs backdrop-blur-sm">
                                     {s.title}
                                 </div>
@@ -135,13 +116,6 @@ export function RoadmapSummaryCard({
                     </Button>
                 </div>
             </CardContent>
-
-            <LockConfirmationModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onConfirm={handleConfirmLock}
-                roadmap={roadmap}
-            />
         </Card>
     );
 }

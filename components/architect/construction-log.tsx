@@ -8,8 +8,7 @@ import { IntentInput } from "@/components/architect/intent-input";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
-import { History, Settings, RotateCw, Sparkles, User, Hammer, Command } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Sparkles, Hammer } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { SUGGESTIONS } from "@/lib/constants";
 import { useRoadmapState } from "@/hooks/use-roadmap-state";
@@ -29,7 +28,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
     });
 
     const [input, setInput] = React.useState("");
-    const { setRoadmap, setGenerating, setError, setLocked, isLocked } = useRoadmapState();
+    const { setRoadmap, setGenerating, setError } = useRoadmapState();
 
     // Extract roadmap from AI messages
     React.useEffect(() => {
@@ -58,7 +57,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                         }
                     }
                 } catch (err) {
-                    // Silently fail for partial/invalid JSON during streaming
+                    console.error(err)
                 }
             }
         }
@@ -241,7 +240,6 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                                                                                 <div className="mt-4 not-prose">
                                                                                     <RoadmapSummaryCard
                                                                                         roadmap={inlineRoadmapVal}
-                                                                                        isLocked={isLocked}
                                                                                         isGenerating={false} // If we are rendering final message, it's done. 
                                                                                         onView={handleView}
                                                                                         onConstruct={handleConstruct}
@@ -260,7 +258,6 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                                                                             <div key={index} className="mt-4 first:mt-0 not-prose">
                                                                                 <RoadmapSummaryCard
                                                                                     roadmap={data}
-                                                                                    isLocked={isLocked}
                                                                                     isGenerating={status === 'streaming'}
                                                                                     onView={handleView}
                                                                                     onConstruct={handleConstruct}

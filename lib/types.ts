@@ -13,3 +13,7 @@ export type Roadmap = {
     description: string;
     nodes: RoadmapNode[];
 };
+
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TODO = unknown | any
