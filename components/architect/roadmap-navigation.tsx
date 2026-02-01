@@ -37,8 +37,8 @@ export function RoadmapNavigation({ roadmap, isLoading = false, onStartArchitect
     if (!roadmap && !isLoading) {
         return (
             <div className="h-full w-full flex flex-col items-center justify-center p-8 text-center bg-muted/5 border-l border-border/40">
-                <div className="h-16 w-16 mb-6 rounded-2xl bg-muted/50 border border-border/50 flex items-center justify-center">
-                    <Icons.layoutGrid className="h-8 w-8 text-muted-foreground/40" />
+                <div className="h-20 w-24 mb-6 flex items-center justify-center opacity-20">
+                    <Icons.logo variant="white" className="h-12 w-12" />
                 </div>
                 <h3 className="text-lg font-medium tracking-tight mb-2">No Blueprint Yet</h3>
                 <p className="text-muted-foreground text-sm max-w-[200px] leading-relaxed mb-6">

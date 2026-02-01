@@ -97,9 +97,9 @@ Kerno is a **structure‑first learning engine** that converts intent into a mas
 
 ### Brand Identity
 
-* **Primary Color**: Deep Emerald (#0F766E)
+* **Primary Color**: Violet (oklch(0.541 0.281 293.009))
 * **Base**: Absolute Black + Off‑White
-* **Accent**: Soft glass highlights, subtle grids
+* **Accent**: Soft glass highlights, subtle grids, and "Bell Curve" / "Kernel" geometric motifs
 
 ### Typography
 

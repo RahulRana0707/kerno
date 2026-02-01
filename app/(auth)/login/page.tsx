@@ -17,7 +17,7 @@ export default function LoginPage() {
                 className="w-full rounded-2xl border border-white/10 bg-black/50 backdrop-blur-xl p-8 shadow-2xl"
             >
                 <div className="flex flex-col items-center mb-8">
-                    <div className="h-10 w-10 rounded bg-primary shadow-[0_0_15px_var(--primary)] mb-4" />
+                    <Icons.logo variant="brand" className="h-10 w-16 mb-4 drop-shadow-[0_0_15px_oklch(var(--primary))]" />
                     <h1 className="text-2xl font-bold tracking-tight text-white">Welcome back</h1>
                     <p className="text-sm text-muted-foreground mt-2 text-center">
                         Enter your details to access your mastery paths.

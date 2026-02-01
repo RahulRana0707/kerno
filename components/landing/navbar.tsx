@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useScroll, useMotionValueEvent, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Icons } from "@/components/icons";
 
 export function Navbar() {
     const { scrollY } = useScroll();
@@ -36,11 +37,11 @@ export function Navbar() {
                     opacity: visible ? 1 : 0
                 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-center justify-between px-6 py-3 rounded-full border border-white/10 bg-black/50 backdrop-blur-xl shadow-lg supports-[backdrop-filter]:bg-black/20"
+                className="flex items-center justify-between px-6 py-3 rounded-full border border-white/10 bg-black/50 backdrop-blur-xl shadow-lg supports-backdrop-filter:bg-black/20"
             >
-                <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-white">
-                    <div className="h-5 w-5 rounded bg-primary shadow-[0_0_10px_var(--primary)]" />
-                    <span>Kerno</span>
+                <Link href="/" className="flex items-center gap-2 font-bold tracking-tight text-white group">
+                    <Icons.logo variant="brand" className="h-6 w-8 drop-shadow-[0_0_8px_var(--primary)] transition-transform group-hover:scale-110" />
+                    <span className="text-lg">Kerno</span>
                 </Link>
 
                 <div className="flex items-center gap-6">
@@ -49,7 +50,7 @@ export function Navbar() {
                         <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
                     </div>
 
-                    <div className="h-4 w-[1px] bg-white/20 hidden sm:block" />
+                    <div className="h-4 w-px hidden sm:block bg-white/20" />
 
                     <div className="flex items-center gap-3">
                         <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">

@@ -112,8 +112,8 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                                 >
                                     <div className="mb-8 relative group cursor-default">
                                         <div className="absolute -inset-4 bg-linear-to-r from-primary/20 to-purple-500/20 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-1000" />
-                                        <div className="relative h-20 w-20 rounded-[2rem] bg-linear-to-tr from-background to-muted border border-border/50 flex items-center justify-center shadow-2xl">
-                                            <Icons.hammer className="h-8 w-8 text-primary/80" />
+                                        <div className="relative h-20 w-24 flex items-center justify-center">
+                                            <Icons.logo className="h-16 w-16" variant="brand" />
                                         </div>
                                     </div>
 
@@ -175,7 +175,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                                                         </Avatar>
                                                     ) : (
                                                         <div className="h-8 w-8 rounded-lg bg-linear-to-tr from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner mt-0.5">
-                                                            <Hammer className="h-4 w-4 text-primary" />
+                                                            <Icons.logo className="h-4 w-4" />
                                                         </div>
                                                     )}
                                                 </div>
