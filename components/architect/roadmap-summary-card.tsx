@@ -11,7 +11,7 @@ interface RoadmapSummaryCardProps {
     isGenerating?: boolean;
 }
 
-import { Roadmap, RoadmapNode } from "@/lib/types";
+import { Roadmap } from "@/lib/types";
 
 export function RoadmapSummaryCard({
     roadmap,
@@ -22,12 +22,10 @@ export function RoadmapSummaryCard({
     onView?: (roadmap: Roadmap) => void;
     onConstruct?: (roadmap: Roadmap) => void;
 }) {
-    const nodes = roadmap?.nodes || [];
-    const sections = nodes.filter((n: RoadmapNode) => n.type === 'section');
 
     return (
-        <Card className="w-full border-primary/10 bg-primary/5 backdrop-blur-3xl overflow-hidden group/roadmap shadow-2xl shadow-primary/5">
-            <CardHeader className="pb-4 space-y-3">
+        <Card className="w-full group/roadmap p-0 border-none bg-transparent">
+            <CardHeader className="space-y-3 p-0">
                 <div className="flex items-start justify-between gap-4">
                     <CardTitle className="text-lg font-bold text-foreground/90 group-hover/roadmap:text-primary transition-colors flex items-center gap-2 leading-none">
                         {isGenerating && !roadmap?.title ? (
@@ -51,31 +49,8 @@ export function RoadmapSummaryCard({
                     </CardDescription>
                 )}
             </CardHeader>
-            <CardContent className="space-y-6 pt-2">
-                <div className="space-y-3">
-                    <p className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground/50 flex items-center gap-2">
-                        Core Architecture
-                        {isGenerating && <span className="text-[9px] animate-pulse text-primary/70">(Constructing...)</span>}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                        {sections.length > 0 ? (
-                            sections.map((s: RoadmapNode) => (
-                                <div key={s.id} className="px-3 py-1 rounded-full bg-background/60 border border-border/60 text-[11px] font-medium text-foreground/80 shadow-xs backdrop-blur-sm">
-                                    {s.title}
-                                </div>
-                            ))
-                        ) : isGenerating ? (
-                            <div className="flex gap-2">
-                                <div className="h-6 w-20 bg-primary/10 animate-pulse rounded-full" />
-                                <div className="h-6 w-24 bg-primary/10 animate-pulse rounded-full" />
-                            </div>
-                        ) : (
-                            <div className="text-[11px] text-muted-foreground italic px-1">No sections defined yet</div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pt-2">
+            <CardContent className="space-y-6 p-0">
+                <div className="grid grid-cols-2 gap-3">
                     <Button
                         size="sm"
                         onClick={() => onView?.(roadmap)}
