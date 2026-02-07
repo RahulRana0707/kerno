@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1770473659775,
+      "tag": "0000_cynical_star_brand",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770474041628,
+      "tag": "0001_freezing_longshot",
+      "breakpoints": true
+    }
+  ]
+}
