@@ -5,13 +5,14 @@ import Link from "next/link";
 import { useScroll, useMotionValueEvent, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
-import { redirect } from "next/navigation";
+import { UserNav } from "./user-nav";
 import { authClient } from "@/lib/auth-client";
 
 export function Navbar() {
     const { scrollY } = useScroll();
     const [visible, setVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const { data: session, isPending } = authClient.useSession();
 
     useMotionValueEvent(scrollY, "change", (current) => {
         if (typeof current === "number") {
@@ -55,13 +56,18 @@ export function Navbar() {
                     <div className="h-4 w-px hidden sm:block bg-white/20" />
 
                     <div className="flex items-center gap-3">
-                        <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
-                            Login
-                        </Link>
+                        {isPending ? (
+                            <div className="h-8 w-8 rounded-full bg-white/5 animate-pulse" />
+                        ) : session?.user ? (
+                            <UserNav />
+                        ) : (
+                            <Link href="/login" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">
+                                Login
+                            </Link>
+                        )}
                         <Button size="sm" className="rounded-full px-5 h-9 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(15,118,110,0.3)] transition-all hover:shadow-[0_0_30px_rgba(15,118,110,0.5)] border-none">
                             Get Started
                         </Button>
-
                     </div>
                 </div>
             </motion.nav>

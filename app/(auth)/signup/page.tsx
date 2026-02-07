@@ -10,6 +10,7 @@ import { useActionState, useEffect } from "react";
 import { signUp } from "@/actions/auth";
 import { ServerResponse } from "@/lib/types";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
 export default function SignupPage() {
     const initialState: ServerResponse = {
@@ -42,11 +43,19 @@ export default function SignupPage() {
                 </div>
 
                 <div className="space-y-4">
-                    <Button variant="outline" className="w-full h-11 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white relative">
+                    <Button variant="outline" className="w-full h-11 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white relative" onClick={async () => {
+                        await authClient.signIn.social({
+                            provider: "google"
+                        })
+                    }}>
                         <Icons.google className="mr-2 h-4 w-4" />
                         Sign up with Google
                     </Button>
-                    <Button variant="outline" className="w-full h-11 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white">
+                    <Button variant="outline" className="w-full h-11 border-white/10 bg-white/5 hover:bg-white/10 hover:text-white" onClick={async () => {
+                        await authClient.signIn.social({
+                            provider: "github"
+                        })
+                    }}>
                         <Icons.github className="mr-2 h-4 w-4" />
                         Sign up with GitHub
                     </Button>
