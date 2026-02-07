@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useScroll, useMotionValueEvent, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
+import { redirect } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 export function Navbar() {
     const { scrollY } = useScroll();
@@ -59,6 +61,7 @@ export function Navbar() {
                         <Button size="sm" className="rounded-full px-5 h-9 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(15,118,110,0.3)] transition-all hover:shadow-[0_0_30px_rgba(15,118,110,0.5)] border-none">
                             Get Started
                         </Button>
+
                     </div>
                 </div>
             </motion.nav>

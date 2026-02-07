@@ -6,8 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/icons";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useActionState, useEffect } from "react";
+import { signUp } from "@/actions/auth";
+import { ServerResponse } from "@/lib/types";
+import { toast } from "sonner";
 
 export default function SignupPage() {
+    const initialState: ServerResponse = {
+        errorMessage: '',
+        success: false,
+    };
+
+    const [state, formAction, pending] = useActionState(signUp, initialState);
+
+    useEffect(() => {
+        if (state?.errorMessage?.length) {
+            toast.error(state.errorMessage);
+        }
+    }, [state?.errorMessage]);
+
     return (
         <AuthLayout>
             <motion.div
@@ -44,9 +61,11 @@ export default function SignupPage() {
                     </div>
                 </div>
 
-                <form className="space-y-4">
+                <form className="space-y-4" action={formAction}>
                     <div className="space-y-2">
                         <Input
+                            id="name"
+                            name="name"
                             type="text"
                             placeholder="Full Name"
                             className="h-11 bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/50"
@@ -54,6 +73,8 @@ export default function SignupPage() {
                     </div>
                     <div className="space-y-2">
                         <Input
+                            id="email"
+                            name="email"
                             type="email"
                             placeholder="name@example.com"
                             className="h-11 bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/50"
@@ -61,12 +82,15 @@ export default function SignupPage() {
                     </div>
                     <div className="space-y-2">
                         <Input
+                            id="pwd"
+                            name="pwd"
                             type="password"
                             placeholder="Password"
                             className="h-11 bg-white/5 border-white/10 focus-visible:ring-primary focus-visible:border-primary placeholder:text-muted-foreground/50"
                         />
                     </div>
-                    <Button className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(15,118,110,0.3)] transition-all hover:shadow-[0_0_30px_rgba(15,118,110,0.5)] border-none">
+                    <Button className="w-full h-11 bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-[0_0_20px_rgba(15,118,110,0.3)] transition-all hover:shadow-[0_0_30px_rgba(15,118,110,0.5)] border-none" disabled={pending}>
+                        {pending && <Icons.spinner className="h-5 w-5 animate-spin" />}
                         Create Account
                     </Button>
                 </form>

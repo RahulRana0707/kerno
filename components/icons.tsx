@@ -25,11 +25,13 @@ import {
     PanelLeftIcon,
     XIcon,
     type LucideIcon,
+    LoaderCircle,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+    spinner: LoaderCircle,
     arrowLeft: ArrowLeft,
     arrowRight: ArrowRight,
     arrowUp: ArrowUp,

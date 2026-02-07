@@ -17,3 +17,10 @@ export type Roadmap = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type TODO = unknown | any
+
+
+export type ServerResponse = {
+    success: boolean;
+    data?: unknown;
+    errorMessage?: string | null;
+}
