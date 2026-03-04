@@ -6,10 +6,6 @@ export default function ArchitectPage() {
     // For now, render the client-side shell.
     return (
         <main className="h-screen w-full bg-background overflow-hidden flex flex-col">
-            {/* 
-         Note: We might want a specialized Header for this view later, 
-         or just use the Shell's internal layout.
-       */}
             <React.Suspense fallback={<div className="flex items-center justify-center h-full text-muted-foreground">Loading Architect...</div>}>
                 <ArchitectShell />
             </React.Suspense>

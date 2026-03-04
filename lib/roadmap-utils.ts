@@ -7,7 +7,7 @@ export interface FlatNode {
     id: string;
     title: string;
     description?: string;
-    type: "section" | "topic" | "exercise";
+    type?: "section" | "topic" | "exercise";
     parentId?: string;
     isCompleted?: boolean;
 }

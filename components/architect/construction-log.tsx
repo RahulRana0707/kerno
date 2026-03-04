@@ -10,7 +10,7 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { SUGGESTIONS } from "@/lib/constants";
+import { ConstructionZeroScreen } from "@/components/architect/construction-zero-screen";
 import { useRoadmapState } from "@/hooks/use-roadmap-state";
 import { Roadmap } from "@/lib/types";
 import { RoadmapSummaryCard } from "./roadmap-summary-card";
@@ -100,54 +100,11 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                         "w-full min-h-full flex flex-col px-4 py-6 md:px-6",
                         messages.length === 0 ? "justify-center" : "justify-start"
                     )}>
-                        <AnimatePresence mode="popLayout" initial={false}>
+                        <AnimatePresence initial={true}>
                             {messages.length === 0 ? (
-                                <motion.div
-                                    key="zero-screen"
-                                    initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)" }}
-                                    animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                                    exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)" }}
-                                    transition={{ duration: 0.5, ease: "circOut" }}
-                                    className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto min-h-[50vh]"
-                                >
-                                    <div className="mb-8 relative group cursor-default">
-                                        <div className="absolute -inset-4 bg-linear-to-r from-primary/20 to-purple-500/20 rounded-full blur-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-1000" />
-                                        <div className="relative h-20 w-24 flex items-center justify-center">
-                                            <Icons.logo className="h-16 w-16" variant="brand" />
-                                        </div>
-                                    </div>
-
-                                    <h2 className="text-3xl font-medium mb-3 tracking-tight text-center bg-clip-text text-transparent bg-linear-to-b from-foreground to-foreground/50">
-                                        Structure your thoughts
-                                    </h2>
-                                    <p className="text-muted-foreground text-sm max-w-[400px] leading-relaxed mb-8 text-center text-balance">
-                                        I can architect complex systems or break down topics into a mastery path.
-                                    </p>
-
-                                    {/* Suggestions */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-2xl px-4">
-                                        {SUGGESTIONS.map((suggestion, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => {
-                                                    const text = `Create a roadmap for ${suggestion.title}: ${suggestion.description}`;
-                                                    setInput(text);
-                                                    inputRef.current?.focus();
-                                                }}
-                                                className="flex flex-col items-start p-3 rounded-xl border border-border/40 bg-background/40 hover:bg-muted/40 hover:border-border/80 transition-all duration-300 text-left group"
-                                            >
-                                                <span className="text-xs font-semibold text-foreground/80 group-hover:text-primary transition-colors mb-1">
-                                                    {suggestion.title}
-                                                </span>
-                                                <span className="text-[10px] text-muted-foreground leading-snug line-clamp-2">
-                                                    {suggestion.description}
-                                                </span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                </motion.div>
+                               <ConstructionZeroScreen key="zero-screen" inputRef={inputRef} onInputChange={setInput} />
                             ) : (
-                                <div className="space-y-6 pb-4">
+                                <div key="messages" className="space-y-6 pb-4">
                                     {messages.map((msg, idx) => {
                                         // If streaming AND this is the last message AND it's from assistant, 
                                         // we DO NOT render the text content yet. We show the skeleton card.
@@ -329,7 +286,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                         isLoading={status === 'streaming'}
                     />
                     <div className="mt-3 text-center">
-                        <p className="text-[10px] text-muted-foreground/40 font-medium">
+                        <p className="text-xs text-muted-foreground font-medium">
                             AI can make mistakes. Review generated architectures carefully.
                         </p>
                     </div>
