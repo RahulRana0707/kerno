@@ -1,6 +1,6 @@
 import { convertToModelMessages, streamText, UIMessage, Output } from 'ai';
 import { google } from '@ai-sdk/google';
-import { roadmapSchema } from '@/lib/schemas/roadmap';
+import { architectResponseSchema } from '@/lib/schemas/architect-response';
 import { ARCHITECT_SYSTEM_PROMPT } from '@/lib/prompts/architect';
 
 // Allow up to 60 seconds for complex roadmap generation
@@ -10,19 +10,17 @@ export async function POST(req: Request) {
     try {
         const { messages }: { messages: UIMessage[] } = await req.json();
 
-        // Build system prompt (Now always expert/comprehensive)
-        const systemPrompt = ARCHITECT_SYSTEM_PROMPT;
-
         const result = streamText({
-            model: google('gemini-2.5-flash'), // Fast model for quick responses
-            system: systemPrompt,
+            model: google('gemini-2.5-flash'),
+            system: ARCHITECT_SYSTEM_PROMPT,
             messages: await convertToModelMessages(messages),
             output: Output.object({
-                schema: roadmapSchema,
-                name: "roadmap",
-                description: "A structured learning roadmap based on user intent, following Kerno's structure-first philosophy",
+                schema: architectResponseSchema,
+                name: "architectResponse",
+                description:
+                    "Your response: message (always), intent (clarify or roadmap), and roadmap (only when intent is roadmap).",
             }),
-            temperature: 0.7, // Balance creativity with consistency
+            temperature: 0.7,
         });
 
         return result.toUIMessageStreamResponse();

@@ -14,59 +14,84 @@ import { useRoadmapState } from "@/hooks/use-roadmap-state";
 import { Roadmap } from "@/lib/types";
 import { RoadmapSummaryCard } from "./roadmap-summary-card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { INITIAL_MESSAGES } from "@/constant/dummy-roadmap";
 import { type UIMessage } from "ai";
 import { ThinkingLoader } from "@/components/ai/thinking-loader";
+import type { ArchitectResponse } from "@/lib/schemas/architect-response";
 
 interface ConstructionLogProps {
   inputRef: React.RefObject<HTMLTextAreaElement | null>;
 }
 
+/** Single source of truth: get content and optional roadmap from assistant message parts. */
+function getContentAndRoadmap(parts: UIMessage["parts"]): {
+  content: string;
+  roadmap: Roadmap | null;
+} {
+  for (const part of parts) {
+    const p = part as {
+      type: string;
+      text?: string;
+      object?: ArchitectResponse;
+      architectResponse?: ArchitectResponse;
+    };
+
+    if (p.type === "object") {
+      const data = p.object ?? p.architectResponse;
+      if (data) {
+        const msg = data.message ?? "";
+        const roadmap =
+          data.intent === "roadmap" && data.roadmap
+            ? (data.roadmap as Roadmap)
+            : null;
+        return { content: msg, roadmap };
+      }
+    }
+
+    if (p.type === "text" && p.text) {
+      try {
+        const data = JSON.parse(p.text) as ArchitectResponse;
+        if (data && typeof data.message === "string") {
+          const msg = data.message;
+          const roadmap =
+            data.intent === "roadmap" && data.roadmap
+              ? (data.roadmap as Roadmap)
+              : null;
+          return { content: msg, roadmap };
+        }
+      } catch {
+        // not JSON or wrong shape — ignore
+      }
+    }
+  }
+  return { content: "", roadmap: null };
+}
+
+/** User messages: plain text from the first text part. */
+function getUserText(parts: UIMessage["parts"]): string {
+  for (const part of parts) {
+    const p = part as { type: string; text?: string };
+    if (p.type === "text" && p.text) return p.text;
+  }
+  return "";
+}
+
 export function ConstructionLog({ inputRef }: ConstructionLogProps) {
+  const transport = React.useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
   const { messages, sendMessage, status } = useChat({
-    messages: INITIAL_MESSAGES as UIMessage[],
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-    }),
+    messages: [],
+    transport,
   });
 
   const [input, setInput] = React.useState("");
-  const { setRoadmap, setGenerating, setError } = useRoadmapState();
+  const { setRoadmap, roadmap, setGenerating } = useRoadmapState();
+  console.log(messages, roadmap, "roadmap");
 
   React.useEffect(() => {
-    const lastAiMessage = messages.filter((m) => m.role === "assistant").pop();
-
-    if (lastAiMessage?.parts) {
-      for (const part of lastAiMessage.parts) {
-        let roadmapData: any = null;
-
-        try {
-          if ((part as any).type === "object") {
-            roadmapData = (part as any).object;
-          } else if ((part as any).type === "tool-result") {
-            roadmapData = (part as any).result;
-          } else if ((part as any).type === "text" && (part as any).text) {
-            const text = (part as any).text;
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-              roadmapData = JSON.parse(jsonMatch[0]);
-            }
-          }
-
-          if (roadmapData && typeof roadmapData === "object") {
-            if (
-              roadmapData.title ||
-              (Array.isArray(roadmapData.nodes) && roadmapData.nodes.length > 0)
-            ) {
-              setRoadmap(roadmapData as Roadmap);
-            }
-          }
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    }
-  }, [messages, setRoadmap, setError]);
+    const lastAssistant = messages.filter((m) => m.role === "assistant").pop();
+    if (!lastAssistant?.parts) return;
+    const { roadmap } = getContentAndRoadmap(lastAssistant.parts);
+    if (roadmap) setRoadmap(roadmap);
+  }, [messages, setRoadmap]);
 
   React.useEffect(() => {
     setGenerating(status === "streaming");
@@ -76,23 +101,17 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
     if (text.trim()) {
       sendMessage({ text });
       setInput("");
-      setGenerating(true);
     }
   };
 
   const scrollRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, status]);
 
-  const handleView = (roadmap: Roadmap) => {
-    setRoadmap(roadmap);
-  };
-
-  const handleConstruct = (roadmap: Roadmap) => {
-    console.log("Constructing Roadmap State:", roadmap);
+  const handleView = (roadmap: Roadmap) => setRoadmap(roadmap);
+  const handleConstruct = () => {
+    // TODO: wire to construction flow
   };
 
   return (
@@ -115,14 +134,17 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
               ) : (
                 <div key="messages" className="space-y-6 pb-4">
                   {messages.map((msg, idx) => {
-                    // If streaming AND this is the last message AND it's from assistant,
-                    // we DO NOT render the text content yet. We show the skeleton card.
-                    const isStreamingThisMessage =
+                    const isStreamingLast =
                       status === "streaming" &&
                       idx === messages.length - 1 &&
                       msg.role === "assistant";
+                    if (isStreamingLast) return null;
 
-                    if (isStreamingThisMessage) return null;
+                    const isUser = msg.role === "user";
+                    const { content: assistantContent, roadmap: assistantRoadmap } =
+                      getContentAndRoadmap(msg.parts);
+                    const content = isUser ? getUserText(msg.parts) : assistantContent;
+                    const roadmap = isUser ? null : assistantRoadmap;
 
                     return (
                       <motion.div
@@ -132,12 +154,11 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                         transition={{ duration: 0.4 }}
                         className={cn(
                           "flex gap-4 w-full max-w-3xl mx-auto",
-                          msg.role === "user" ? "flex-row-reverse" : "flex-row"
+                          isUser ? "flex-row-reverse" : "flex-row"
                         )}
                       >
-                        {/* Avatar Area */}
                         <div className="flex-none flex flex-col items-center">
-                          {msg.role === "user" ? (
+                          {isUser ? (
                             <Avatar className="h-8 w-8 border border-border shadow-sm">
                               <AvatarImage src="/placeholder-user.jpg" />
                               <AvatarFallback className="bg-muted text-xs text-muted-foreground">
@@ -151,123 +172,54 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                           )}
                         </div>
 
-                        {/* Message Bubble */}
                         <div
                           className={cn(
                             "flex-1 min-w-0 flex flex-col gap-2",
-                            msg.role === "user" ? "items-end" : "items-start"
+                            isUser ? "items-end" : "items-start"
                           )}
                         >
-                          {/* Name Label */}
                           <span className="text-[10px] uppercase tracking-wider text-muted-foreground/50 font-semibold px-1">
-                            {msg.role === "user" ? "You" : "Architect AI"}
+                            {isUser ? "You" : "Architect AI"}
                           </span>
-
                           <div
                             className={cn(
                               "relative px-3 py-2 text-sm leading-relaxed shadow-sm w-full",
-                              msg.role === "user"
+                              isUser
                                 ? "bg-foreground text-background rounded-2xl rounded-tr-sm"
                                 : "bg-muted/40 border border-border/50 text-foreground rounded-2xl rounded-tl-sm backdrop-blur-sm"
                             )}
                           >
                             <article className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border/50 prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none dark:prose-invert">
-                              {msg.parts.map((part, index) => {
-                                if ((part as any).type === "text") {
-                                  const text = (part as any).text;
-
-                                  // Check for JSON in text
-                                  const jsonMatch = text.match(/\{[\s\S]*\}/);
-                                  let cleanText = text;
-                                  let inlineRoadmapVal = null;
-
-                                  if (jsonMatch) {
-                                    try {
-                                      const potentialJson = JSON.parse(jsonMatch[0]);
-                                      if (
-                                        potentialJson &&
-                                        (potentialJson.title || potentialJson.nodes)
-                                      ) {
-                                        console.log(
-                                          "Successfully parsed embedded JSON roadmap:",
-                                          potentialJson
-                                        );
-                                        inlineRoadmapVal = potentialJson;
-                                        cleanText = text.replace(jsonMatch[0], "").trim();
-                                      }
-                                    } catch (e) {
-                                      console.warn(
-                                        "Failed to parse regex-matched JSON in message:",
-                                        e
-                                      );
-                                    }
-                                  } else {
-                                    // fallback cleanup if we just want to hide braces if they were malformed
-                                    // (but better to leave text if not valid JSON)
-                                    // cleanText = text.replace(/\{[\s\S]*\}/g, '').trim();
-                                    // Actually, let's just stick to the robust check above.
-                                  }
-
-                                  return (
-                                    <React.Fragment key={index}>
-                                      {cleanText && (
-                                        <ReactMarkdown
-                                          components={{
-                                            ul: ({ node, ...props }) => (
-                                              <ul
-                                                className="list-disc pl-4 space-y-1 my-2 marker:text-primary/50"
-                                                {...props}
-                                              />
-                                            ),
-                                            ol: ({ node, ...props }) => (
-                                              <ol
-                                                className="list-decimal pl-4 space-y-1 my-2 marker:text-primary/50"
-                                                {...props}
-                                              />
-                                            ),
-                                          }}
-                                        >
-                                          {cleanText}
-                                        </ReactMarkdown>
-                                      )}
-                                      {inlineRoadmapVal && (
-                                        <div className="mt-4 not-prose">
-                                          <RoadmapSummaryCard
-                                            roadmap={inlineRoadmapVal}
-                                            isGenerating={false} // If we are rendering final message, it's done.
-                                            onView={handleView}
-                                            onConstruct={handleConstruct}
-                                          />
-                                        </div>
-                                      )}
-                                    </React.Fragment>
-                                  );
-                                }
-
-                                if (
-                                  (part as any).type === "object" ||
-                                  (part as any).type === "tool-result"
-                                ) {
-                                  const data =
-                                    (part as any).type === "object"
-                                      ? (part as any).object
-                                      : (part as any).result;
-                                  if (data && typeof data === "object") {
-                                    console.log("Rendering object/tool-result roadmap:", data);
-                                    return (
-                                      <div key={index} className="mt-4 first:mt-0 not-prose">
-                                        <RoadmapSummaryCard
-                                          roadmap={data}
-                                          isGenerating={status === "streaming"}
-                                          onView={handleView}
-                                          onConstruct={handleConstruct}
-                                        />
-                                      </div>
-                                    );
-                                  }
-                                }
-                                return null;
-                              })}
+                              {content ? (
+                                <ReactMarkdown
+                                  components={{
+                                    ul: ({ ...props }) => (
+                                      <ul
+                                        className="list-disc pl-4 space-y-1 my-2 marker:text-primary/50"
+                                        {...props}
+                                      />
+                                    ),
+                                    ol: ({ ...props }) => (
+                                      <ol
+                                        className="list-decimal pl-4 space-y-1 my-2 marker:text-primary/50"
+                                        {...props}
+                                      />
+                                    ),
+                                  }}
+                                >
+                                  {content}
+                                </ReactMarkdown>
+                              ) : null}
+                              {roadmap ? (
+                                <div className="mt-4 first:mt-0 not-prose">
+                                  <RoadmapSummaryCard
+                                    roadmap={roadmap}
+                                    isGenerating={status === "streaming"}
+                                    onView={handleView}
+                                    onConstruct={handleConstruct}
+                                  />
+                                </div>
+                              ) : null}
                             </article>
                           </div>
                         </div>
