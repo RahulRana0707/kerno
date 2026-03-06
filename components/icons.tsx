@@ -30,11 +30,13 @@ import {
   SparklesIcon,
   type LucideIcon,
   LoaderCircle,
+  Loader,
 } from "lucide-react";
 
 export type Icon = LucideIcon;
 
 export const Icons = {
+  thinkingLoader: Loader,
   sparklesIcon: SparklesIcon,
   spinner: LoaderCircle,
   arrowLeft: ArrowLeft,
