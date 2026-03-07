@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 
@@ -10,19 +10,18 @@ import ReactMarkdown from "react-markdown";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
 import { ConstructionZeroScreen } from "@/components/architect/construction-zero-screen";
-import { useRoadmapState } from "@/hooks/use-roadmap-state";
+import { GenerationStatus, useRoadmapState } from "@/hooks/use-roadmap-state";
 import { Roadmap } from "@/lib/types";
 import { RoadmapSummaryCard } from "./roadmap-summary-card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { type UIMessage } from "ai";
 import { ThinkingLoader } from "@/components/ai/thinking-loader";
 import type { ArchitectResponse } from "@/lib/schemas/architect-response";
-
+import { INITIAL_MESSAGES } from "@/constant/dummy-roadmap";
+import { UserAvatar } from "@/components/user-avatar";
 interface ConstructionLogProps {
   inputRef: React.RefObject<HTMLTextAreaElement | null>;
 }
 
-/** Single source of truth: get content and optional roadmap from assistant message parts. */
 function getContentAndRoadmap(parts: UIMessage["parts"]): {
   content: string;
   roadmap: Roadmap | null;
@@ -40,9 +39,7 @@ function getContentAndRoadmap(parts: UIMessage["parts"]): {
       if (data) {
         const msg = data.message ?? "";
         const roadmap =
-          data.intent === "roadmap" && data.roadmap
-            ? (data.roadmap as Roadmap)
-            : null;
+          data.intent === "roadmap" && data.roadmap ? (data.roadmap as Roadmap) : null;
         return { content: msg, roadmap };
       }
     }
@@ -53,9 +50,7 @@ function getContentAndRoadmap(parts: UIMessage["parts"]): {
         if (data && typeof data.message === "string") {
           const msg = data.message;
           const roadmap =
-            data.intent === "roadmap" && data.roadmap
-              ? (data.roadmap as Roadmap)
-              : null;
+            data.intent === "roadmap" && data.roadmap ? (data.roadmap as Roadmap) : null;
           return { content: msg, roadmap };
         }
       } catch {
@@ -76,40 +71,49 @@ function getUserText(parts: UIMessage["parts"]): string {
 }
 
 export function ConstructionLog({ inputRef }: ConstructionLogProps) {
-  const transport = React.useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
+  const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
   const { messages, sendMessage, status } = useChat({
-    messages: [],
+    messages: INITIAL_MESSAGES,
     transport,
   });
 
-  const [input, setInput] = React.useState("");
-  const { setRoadmap, roadmap, setGenerating } = useRoadmapState();
-  console.log(messages, roadmap, "roadmap");
+  const [input, setInput] = useState("");
+  const { setRoadmap, setGenerationStatus, generationStatus } = useRoadmapState();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const lastAssistant = messages.filter((m) => m.role === "assistant").pop();
     if (!lastAssistant?.parts) return;
     const { roadmap } = getContentAndRoadmap(lastAssistant.parts);
     if (roadmap) setRoadmap(roadmap);
   }, [messages, setRoadmap]);
 
-  React.useEffect(() => {
-    setGenerating(status === "streaming");
-  }, [status, setGenerating]);
-
-  const handleSend = (text: string) => {
-    if (text.trim()) {
-      sendMessage({ text });
-      setInput("");
+  useEffect(() => {
+    if (status === "streaming") {
+      setGenerationStatus(GenerationStatus.GENERATING);
+    } else if (status === "ready") {
+      setGenerationStatus(GenerationStatus.COMPLETED);
+    } else if (status === "error") {
+      setGenerationStatus(GenerationStatus.ERROR);
     }
-  };
+  }, [setGenerationStatus, status]);
 
-  const scrollRef = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
+  const handleSend = useCallback(
+    (text: string) => {
+      if (text.trim()) {
+        setGenerationStatus(GenerationStatus.SUBMITTED);
+        sendMessage({ text });
+        setInput("");
+      }
+    },
+    [sendMessage, setGenerationStatus]
+  );
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, status]);
 
-  const handleView = (roadmap: Roadmap) => setRoadmap(roadmap);
+  const handleView = useCallback((roadmap: Roadmap) => setRoadmap(roadmap), [setRoadmap]);
   const handleConstruct = () => {
     // TODO: wire to construction flow
   };
@@ -147,11 +151,8 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                     const roadmap = isUser ? null : assistantRoadmap;
 
                     return (
-                      <motion.div
+                      <div
                         key={msg.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4 }}
                         className={cn(
                           "flex gap-4 w-full max-w-3xl mx-auto",
                           isUser ? "flex-row-reverse" : "flex-row"
@@ -159,12 +160,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                       >
                         <div className="flex-none flex flex-col items-center">
                           {isUser ? (
-                            <Avatar className="h-8 w-8 border border-border shadow-sm">
-                              <AvatarImage src="/placeholder-user.jpg" />
-                              <AvatarFallback className="bg-muted text-xs text-muted-foreground">
-                                U
-                              </AvatarFallback>
-                            </Avatar>
+                            <UserAvatar />
                           ) : (
                             <div className="h-8 w-8 rounded-lg bg-linear-to-tr from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner mt-0.5">
                               <Icons.logo className="h-4 w-4" />
@@ -185,8 +181,8 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                             className={cn(
                               "relative px-3 py-2 text-sm leading-relaxed shadow-sm w-full",
                               isUser
-                                ? "bg-foreground text-background rounded-2xl rounded-tr-sm"
-                                : "bg-muted/40 border border-border/50 text-foreground rounded-2xl rounded-tl-sm backdrop-blur-sm"
+                                ? "bg-primary/10 rounded-2xl rounded-tr-sm"
+                                : "bg-muted/30 border border-border/50 text-foreground rounded-2xl rounded-tl-sm backdrop-blur-sm"
                             )}
                           >
                             <article className="prose prose-sm max-w-none prose-p:leading-relaxed prose-pre:bg-muted/50 prose-pre:border prose-pre:border-border/50 prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none dark:prose-invert">
@@ -211,7 +207,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                                 </ReactMarkdown>
                               ) : null}
                               {roadmap ? (
-                                <div className="mt-4 first:mt-0 not-prose">
+                                <div className="mt-5 first:mt-4 not-prose">
                                   <RoadmapSummaryCard
                                     roadmap={roadmap}
                                     isGenerating={status === "streaming"}
@@ -223,11 +219,16 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                             </article>
                           </div>
                         </div>
-                      </motion.div>
+                      </div>
                     );
                   })}
 
-                  <ThinkingLoader isLoading={status === "streaming"} />
+                  <ThinkingLoader
+                    isLoading={
+                      generationStatus === GenerationStatus.GENERATING ||
+                      generationStatus === GenerationStatus.SUBMITTED
+                    }
+                  />
                 </div>
               )}
             </AnimatePresence>
@@ -246,7 +247,10 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
               e.preventDefault();
               if (input.trim()) handleSend(input);
             }}
-            isLoading={status === "streaming"}
+            isLoading={
+              generationStatus === GenerationStatus.GENERATING ||
+              generationStatus === GenerationStatus.SUBMITTED
+            }
           />
           <div className="mt-3 text-center">
             <p className="text-xs text-muted-foreground font-medium">

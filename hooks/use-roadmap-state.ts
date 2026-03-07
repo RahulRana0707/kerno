@@ -2,19 +2,29 @@ import { create } from 'zustand';
 import { Roadmap } from '@/lib/types';
 import { buildRoadmapTree } from '@/lib/roadmap-utils';
 
+
+export enum GenerationStatus {
+    IDLE = 'idle',
+    SUBMITTED = 'submitted',
+    GENERATING = 'generating',
+    COMPLETED = 'completed',
+    ERROR = 'error',
+    READY = 'ready',
+}
+
 interface RoadmapState {
     roadmap: Roadmap | null;
-    isGenerating: boolean;
+    generationStatus: GenerationStatus;
     error: string | null;
     setRoadmap: (roadmap: Partial<Roadmap>) => void;
-    setGenerating: (generating: boolean) => void;
+    setGenerationStatus: (generationStatus: GenerationStatus) => void;
     setError: (error: string | null) => void;
     reset: () => void;
 }
 
 export const useRoadmapState = create<RoadmapState>((set) => ({
     roadmap: null,
-    isGenerating: false,
+    generationStatus: GenerationStatus.IDLE,
     error: null,
     setRoadmap: (data) => {
         if (!data || !data.nodes) {
@@ -31,7 +41,7 @@ export const useRoadmapState = create<RoadmapState>((set) => ({
 
         set({ roadmap: transformedRoadmap, error: null });
     },
-    setGenerating: (generating) => set({ isGenerating: generating }),
-    setError: (error) => set({ error, isGenerating: false }),
-    reset: () => set({ roadmap: null, isGenerating: false, error: null }),
+    setGenerationStatus: (generationStatus: GenerationStatus) => set({ generationStatus }),
+    setError: (error) => set({ error, generationStatus: GenerationStatus.ERROR }),
+    reset: () => set({ roadmap: null, generationStatus: GenerationStatus.IDLE, error: null }),
 }));

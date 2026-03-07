@@ -1,74 +1,87 @@
 "use client";
 
 import * as React from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Icons } from "@/components/icons";
+import { Roadmap } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 interface RoadmapSummaryCardProps {
   roadmap: Roadmap;
   isGenerating?: boolean;
+  onView?: (roadmap: Roadmap) => void;
+  onConstruct?: (roadmap: Roadmap) => void;
 }
-
-import { Roadmap } from "@/lib/types";
 
 export function RoadmapSummaryCard({
   roadmap,
   isGenerating,
   onView,
   onConstruct,
-}: RoadmapSummaryCardProps & {
-  onView?: (roadmap: Roadmap) => void;
-  onConstruct?: (roadmap: Roadmap) => void;
-}) {
+}: RoadmapSummaryCardProps) {
   return (
-    <Card className="w-full group/roadmap p-0 border-none bg-transparent">
-      <CardHeader className="space-y-3 p-0">
-        <div className="flex items-start justify-between gap-4">
-          <CardTitle className="text-lg font-bold text-foreground/90 flex items-center gap-2 leading-none">
+    <Card
+      className={cn(
+        "w-full overflow-hidden",
+        "rounded-xl border border-border/80 bg-card/80 shadow-sm py-4 gap-4",
+        "backdrop-blur-sm"
+      )}
+    >
+      <CardHeader className="flex flex-col gap-2">
+        <div className="flex items-start justify-between gap-2">
+          <CardTitle className="text-base font-semibold tracking-tight text-foreground leading-snug">
             {isGenerating && !roadmap?.title ? (
-              <div className="h-5 w-48 bg-primary/20 animate-pulse rounded" />
+              <span className="inline-block h-5 w-48 bg-muted animate-pulse rounded" />
             ) : (
-              <>{roadmap?.title || "New Blueprint"}</>
+              roadmap?.title || "New Blueprint"
             )}
           </CardTitle>
-          <div className="flex items-center gap-2 shrink-0">
-            {isGenerating && <div className="h-2 w-2 rounded-full bg-primary animate-ping" />}
-          </div>
+          {isGenerating && (
+            <span className="shrink-0 size-2 rounded-full bg-primary animate-ping" aria-hidden />
+          )}
         </div>
         {!roadmap?.description && isGenerating ? (
-          <div className="w-3/4 bg-primary/10 animate-pulse rounded" />
+          <div className="h-4 w-full max-w-[85%] bg-muted animate-pulse rounded" />
         ) : (
-          <CardDescription className="text-sm leading-relaxed text-muted-foreground/80">
-            {roadmap?.description}
-          </CardDescription>
+          roadmap?.description && (
+            <CardDescription className="text-sm text-muted-foreground leading-relaxed max-w-none">
+              {roadmap.description}
+            </CardDescription>
+          )
         )}
       </CardHeader>
-      <CardContent className="space-y-6 p-0">
-        <div className="grid grid-cols-2 gap-3">
-          <Button
-            onClick={() => onView?.(roadmap)}
-            disabled={isGenerating || !roadmap?.nodes}
-            variant="outline"
-          >
-            VIEW
-          </Button>
-
-          <Button onClick={() => onConstruct?.(roadmap)} disabled={isGenerating || !roadmap?.nodes}>
-            {isGenerating ? (
-              <span className="flex items-center gap-2">
-                <Icons.rotateCw className="h-3 w-3 animate-spin" />
-                <span className="hidden sm:inline">Building...</span>
-              </span>
-            ) : (
-              <>
-                <Icons.check className="h-3.5 w-3.5 ml-1" />
-                CONSTRUCT
-              </>
-            )}
-          </Button>
-        </div>
-      </CardContent>
+      <Separator />
+      <CardFooter className="flex flex-wrap gap-2 pt-1">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onView?.(roadmap)}
+          disabled={isGenerating || !roadmap?.nodes}
+          className="flex-1 min-w-0 sm:flex-initial"
+        >
+          View
+        </Button>
+        <Button
+          size="sm"
+          onClick={() => onConstruct?.(roadmap)}
+          disabled={isGenerating || !roadmap?.nodes}
+          className="flex-1 min-w-0 sm:flex-initial"
+        >
+          {isGenerating ? (
+            <>
+              <Icons.rotateCw data-icon="inline-start" className="animate-spin" />
+              Building…
+            </>
+          ) : (
+            <>
+              <Icons.check data-icon="inline-start" />
+              Construct
+            </>
+          )}
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
