@@ -7,7 +7,7 @@ import { DefaultChatTransport } from "ai";
 import { IntentInput } from "@/components/architect/intent-input";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
 import { ConstructionZeroScreen } from "@/components/architect/construction-zero-screen";
 import { GenerationStatus, useRoadmapState } from "@/hooks/use-roadmap-state";
@@ -16,15 +16,25 @@ import { RoadmapSummaryCard } from "./roadmap-summary-card";
 import { type UIMessage } from "ai";
 import { ThinkingLoader } from "@/components/ai/thinking-loader";
 import type { ArchitectResponse } from "@/lib/schemas/architect-response";
-import { INITIAL_MESSAGES } from "@/constant/dummy-roadmap";
 import { UserAvatar } from "@/components/user-avatar";
 interface ConstructionLogProps {
   inputRef: React.RefObject<HTMLTextAreaElement | null>;
 }
 
+function extractPartialMessage(text: string): string {
+  const match = text.match(/"message"\s*:\s*"((?:[^"\\]|\\.)*?)(?:"(?=\s*[,}])|$)/);
+  if (!match) return "";
+  return match[1].replace(/\\(.)/g, "$1");
+}
+
+function hasRoadmapInStream(text: string): boolean {
+  return /"intent"\s*:\s*"roadmap"/.test(text) || /"roadmap"\s*:/.test(text);
+}
+
 function getContentAndRoadmap(parts: UIMessage["parts"]): {
   content: string;
   roadmap: Roadmap | null;
+  hasRoadmap: boolean;
 } {
   for (const part of parts) {
     const p = part as {
@@ -40,7 +50,8 @@ function getContentAndRoadmap(parts: UIMessage["parts"]): {
         const msg = data.message ?? "";
         const roadmap =
           data.intent === "roadmap" && data.roadmap ? (data.roadmap as Roadmap) : null;
-        return { content: msg, roadmap };
+        const hasRoadmap = data.intent === "roadmap" && !!data.roadmap;
+        return { content: msg, roadmap, hasRoadmap };
       }
     }
 
@@ -51,14 +62,18 @@ function getContentAndRoadmap(parts: UIMessage["parts"]): {
           const msg = data.message;
           const roadmap =
             data.intent === "roadmap" && data.roadmap ? (data.roadmap as Roadmap) : null;
-          return { content: msg, roadmap };
+          const hasRoadmap = data.intent === "roadmap" && !!data.roadmap;
+          return { content: msg, roadmap, hasRoadmap };
         }
       } catch {
-        // not JSON or wrong shape — ignore
+        // Streaming: incomplete JSON — extract partial content and detect intent
+        const content = extractPartialMessage(p.text);
+        const hasRoadmap = hasRoadmapInStream(p.text);
+        return { content, roadmap: null, hasRoadmap };
       }
     }
   }
-  return { content: "", roadmap: null };
+  return { content: "", roadmap: null, hasRoadmap: false };
 }
 
 /** User messages: plain text from the first text part. */
@@ -73,19 +88,25 @@ function getUserText(parts: UIMessage["parts"]): string {
 export function ConstructionLog({ inputRef }: ConstructionLogProps) {
   const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
   const { messages, sendMessage, status } = useChat({
-    messages: INITIAL_MESSAGES,
+    messages: [],
     transport,
   });
 
   const [input, setInput] = useState("");
+  const [creatingRoadmap, setCreatingRoadmap] = useState(false);
   const { setRoadmap, setGenerationStatus, generationStatus } = useRoadmapState();
 
   useEffect(() => {
     const lastAssistant = messages.filter((m) => m.role === "assistant").pop();
     if (!lastAssistant?.parts) return;
-    const { roadmap } = getContentAndRoadmap(lastAssistant.parts);
-    if (roadmap) setRoadmap(roadmap);
-  }, [messages, setRoadmap]);
+    const { roadmap, hasRoadmap = false } = getContentAndRoadmap(lastAssistant.parts);
+    if (hasRoadmap) {
+      queueMicrotask(() => setCreatingRoadmap(true));
+    }
+    if (roadmap) {
+      setRoadmap(roadmap);
+    }
+  }, [messages, setRoadmap, setCreatingRoadmap]);
 
   useEffect(() => {
     if (status === "streaming") {
@@ -100,6 +121,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
   const handleSend = useCallback(
     (text: string) => {
       if (text.trim()) {
+        setCreatingRoadmap(false);
         setGenerationStatus(GenerationStatus.SUBMITTED);
         sendMessage({ text });
         setInput("");
@@ -228,6 +250,7 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                       generationStatus === GenerationStatus.GENERATING ||
                       generationStatus === GenerationStatus.SUBMITTED
                     }
+                    text={creatingRoadmap ? "Creating roadmap..." : "Thinking....."}
                   />
                 </div>
               )}
