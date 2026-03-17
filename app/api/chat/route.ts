@@ -7,6 +7,16 @@ import { ARCHITECT_SYSTEM_PROMPT } from '@/lib/prompts/architect';
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
+    if (!process.env.GOOGLE_GENERATIVE_AI_API_KEY) {
+        return new Response(
+            JSON.stringify({ 
+                error: 'Configuration Error', 
+                message: 'Google Generative AI API key is missing. Please check your environment variables.' 
+            }),
+            { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+    }
+
     try {
         const { messages }: { messages: UIMessage[] } = await req.json();
 

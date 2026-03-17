@@ -15,10 +15,10 @@ export const ConstructionZeroScreen = ({
   return (
     <motion.div
       key="zero-screen"
-      initial={{ opacity: 0, scale: 0.9, filter: "blur(10px)" }}
+      initial={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
       animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-      exit={{ opacity: 0, scale: 0.95, filter: "blur(5px)" }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      exit={{ opacity: 0, scale: 0.95, filter: "blur(2px)" }}
+      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
       className="flex flex-col items-center justify-center w-full max-w-2xl mx-auto min-h-[50vh]"
     >
       <div className="mb-2 relative group cursor-default">
@@ -37,21 +37,22 @@ export const ConstructionZeroScreen = ({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full max-w-2xl px-4">
         {SUGGESTIONS.map((suggestion, i) => (
-          <button
+          <motion.button
             key={i}
             type="button"
+            whileTap={{ scale: 0.97 }}
             onClick={() => {
               const text = `Create a roadmap for ${suggestion.title}: ${suggestion.description}`;
               onInputChange(text);
               inputRef.current?.focus();
             }}
-            className="flex cursor-pointer flex-col items-start p-3 rounded-xl border border-border/60 bg-background/40 hover:bg-muted/40 hover:border-border/80 transition-all duration-300 text-left group"
+            className="flex cursor-pointer flex-col items-start p-3 rounded-xl border border-border/60 bg-background/40 hover:bg-muted/40 hover:border-border/80 transition-all duration-200 ease-[var(--ease-out)] text-left group"
           >
             <span className="text-sm font-semibold text-primary mb-1">{suggestion.title}</span>
             <span className="text-xs text-muted-foreground leading-snug line-clamp-2">
               {suggestion.description}
             </span>
-          </button>
+          </motion.button>
         ))}
       </div>
     </motion.div>

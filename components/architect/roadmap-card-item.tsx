@@ -36,16 +36,17 @@ export function RoadmapCard({ node, onClick, staggerDelay = 0 }: RoadmapCardProp
         opacity: 1,
         filter: "blur(0px)",
         transition: {
-          duration: 0.35,
+          duration: 0.25,
           delay: staggerDelay,
-          ease: [0.19, 1, 0.22, 1],
+          ease: [0.23, 1, 0.32, 1],
         },
       }}
+      whileTap={isClickable ? { scale: 0.98 } : undefined}
       onClick={isClickable ? onClick : undefined}
       disabled={!isClickable}
       className={cn(
-        "flex cursor-default w-full text-left rounded-xl border border-border/60 bg-background/40 transition-all duration-300",
-        "hover:border-border/80 hover:bg-muted/40",
+        "flex cursor-default w-full text-left rounded-xl border border-border/60 bg-background/40 transition-all duration-200 ease-[var(--ease-out)]",
+        "hover:border-border/80 hover:bg-muted/40 hover:-translate-y-0.5 hover:shadow-md",
         isClickable && "cursor-pointer"
       )}
     >

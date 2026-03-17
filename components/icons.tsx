@@ -1,4 +1,5 @@
 import {
+  AlertCircle,
   ArrowLeft,
   ArrowRight,
   ArrowUp,
@@ -36,6 +37,7 @@ import {
 export type Icon = LucideIcon;
 
 export const Icons = {
+  alertCircle: AlertCircle,
   thinkingLoader: Loader,
   sparklesIcon: SparklesIcon,
   spinner: LoaderCircle,

@@ -58,11 +58,11 @@ export function NavSidebar({ nodes, selectedNodeId, onSelectNode, className }: N
 
                 {/* Toggles Row */}
                 <div className="flex items-center gap-2">
-                    <button className="flex-1 flex items-center justify-between px-3 py-1.5 rounded-md border border-white/10 bg-white/5 text-xs text-zinc-400 hover:text-white hover:bg-white/10 transition-colors">
+                    <button className="flex-1 flex items-center justify-between px-3 py-1.5 rounded-md border border-white/10 bg-white/5 text-xs text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-150 ease-[var(--ease-out)] active:scale-[0.98]">
                         <span>English</span>
                         <Icons.chevronDownIcon className="h-3 w-3 opacity-50" />
                     </button>
-                    <button className="flex items-center justify-center h-8 w-8 rounded-md border border-white/10 bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors" title="Toggle Theme">
+                    <button className="flex items-center justify-center h-8 w-8 rounded-md border border-white/10 bg-white/5 text-zinc-400 hover:text-white hover:bg-white/10 transition-all duration-150 ease-[var(--ease-out)] active:scale-[0.98]" title="Toggle Theme">
                         <Icons.sun className="h-4 w-4 hidden dark:flex" />
                         <Icons.moon className="h-4 w-4 flex dark:hidden" />
                     </button>
@@ -89,7 +89,7 @@ export function NavSidebar({ nodes, selectedNodeId, onSelectNode, className }: N
                                                         key={child.id}
                                                         onClick={() => onSelectNode(child.id)}
                                                         className={cn(
-                                                            "text-left px-3 py-1.5 text-sm rounded-md border-l-2 border-transparent transition-all ml-1",
+                                                            "text-left px-3 py-1.5 text-sm rounded-md border-l-2 border-transparent transition-all ml-1 duration-150 ease-[var(--ease-out)] active:scale-[0.98]",
                                                             isSelected
                                                                 ? "text-primary font-medium border-primary bg-primary/5"
                                                                 : "text-zinc-400 hover:text-white hover:border-zinc-700"
@@ -112,7 +112,7 @@ export function NavSidebar({ nodes, selectedNodeId, onSelectNode, className }: N
                                 key={node.id}
                                 onClick={() => onSelectNode(node.id)}
                                 className={cn(
-                                    "w-full text-left px-3 py-2 text-sm font-medium rounded-md transition-colors mx-1",
+                                    "w-full text-left px-3 py-2 text-sm font-medium rounded-md transition-all duration-150 ease-[var(--ease-out)] active:scale-[0.98] mx-1",
                                     isSelected
                                         ? "bg-primary/10 text-primary"
                                         : "text-zinc-400 hover:text-white hover:bg-white/5"

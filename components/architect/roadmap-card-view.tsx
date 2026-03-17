@@ -8,9 +8,9 @@ import { Icons } from "@/components/icons";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-const STAGGER_DELAY = 0.04;
-const SLIDE_DURATION = 0.4;
-const EASE = [0.19, 1, 0.22, 1] as const;
+const STAGGER_DELAY = 0.03;
+const SLIDE_DURATION = 0.3;
+const EASE = [0.23, 1, 0.32, 1] as const;
 const SLIDE_OFFSET = 32;
 const HEADER_HEIGHT = 30;
 
@@ -89,7 +89,7 @@ export function RoadmapCardView({ nodes, className }: RoadmapCardViewProps) {
                 filter: { duration: SLIDE_DURATION * 0.5, ease: EASE },
               },
             }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full content-start absolute inset-0"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full h-full content-start absolute inset-0 pt-2"
           >
             {currentNodes.map((node, index) => (
               <RoadmapCard

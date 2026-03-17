@@ -61,20 +61,27 @@ export function RoadmapNavigation({
 
   if (!roadmap && !isLoading) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia variant="icon">
-            <Icons.logo variant="brand" className="h-16 w-16" />
-          </EmptyMedia>
-          <EmptyTitle>No Blueprint Yet</EmptyTitle>
-          <EmptyDescription>
-            Start a conversation with the Architect to generate your learning path.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent className="flex-row justify-center gap-2">
-          <Button onClick={onStartArchitecture}>Start Architecture</Button>
-        </EmptyContent>
-      </Empty>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+        className="w-full"
+      >
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Icons.logo variant="brand" className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No Blueprint Yet</EmptyTitle>
+            <EmptyDescription>
+              Start a conversation with the Architect to generate your learning path.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent className="flex-row justify-center gap-2">
+            <Button onClick={onStartArchitecture}>Start Architecture</Button>
+          </EmptyContent>
+        </Empty>
+      </motion.div>
     );
   }
 
@@ -87,14 +94,14 @@ export function RoadmapNavigation({
       <main className="w-[80%] h-[80%] m-auto flex flex-col gap-4">
         <motion.div
           className="flex flex-col border-b border-primary/10 backdrop-blur-sm py-4 gap-2.5"
-          initial={{ opacity: 0, filter: "blur(2px)" }}
+          initial={{ opacity: 0, y: -10, filter: "blur(2px)" }}
           animate={{
             opacity: 1,
+            y: 0,
             filter: "blur(0px)",
             transition: {
-              duration: 0.35,
-              ease: [0.19, 1, 0.22, 1],
-              filter: { duration: 0.3, ease: [0.19, 1, 0.22, 1] },
+              duration: 0.3,
+              ease: [0.23, 1, 0.32, 1],
             },
           }}
         >

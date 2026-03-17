@@ -29,7 +29,7 @@ export function BentoGridSection() {
                                     <motion.div
                                         initial={{ scale: 0.8, opacity: 0 }}
                                         whileInView={{ scale: 1, opacity: 1 }}
-                                        transition={{ duration: 1 }}
+                                        transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                                         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-primary shadow-[0_0_20px_var(--primary)]"
                                     />
                                     {/* Connecting lines and nodes would actally be SVG here, keeping it abstract for now */}

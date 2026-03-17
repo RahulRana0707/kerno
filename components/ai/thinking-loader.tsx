@@ -13,13 +13,14 @@ export const ThinkingLoader = ({ isLoading, text = "Thinking....." }: ThinkingLo
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 10, scale: 0.98, filter: "blur(2px)" }}
+      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
       className="flex gap-4 w-full max-w-3xl mx-auto"
     >
       <div className="flex-none flex items-center gap-1.5">
         <div className="h-7 w-7 rounded-lg bg-linear-to-tr from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-inner mt-0.5 animate-pulse">
-          <Icons.thinkingLoader className="h-4 w-4 text-primary animate-spin" />
+          <Icons.thinkingLoader className="h-4 w-4 text-primary animate-[spin_1.5s_linear_infinite]" />
         </div>
         <span className="text-muted-foreground">
           <ShinyText

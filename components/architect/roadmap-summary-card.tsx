@@ -26,7 +26,7 @@ export function RoadmapSummaryCard({
       className={cn(
         "w-full overflow-hidden",
         "rounded-xl border border-border/80 bg-card/80 shadow-sm py-4 gap-4",
-        "backdrop-blur-sm"
+        "backdrop-blur-sm",
       )}
     >
       <CardHeader className="flex flex-col gap-2">

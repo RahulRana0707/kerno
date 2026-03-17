@@ -7,7 +7,8 @@ import { DefaultChatTransport } from "ai";
 import { IntentInput } from "@/components/architect/intent-input";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { ConstructionZeroScreen } from "@/components/architect/construction-zero-screen";
 import { GenerationStatus, useRoadmapState } from "@/hooks/use-roadmap-state";
@@ -87,7 +88,7 @@ function getUserText(parts: UIMessage["parts"]): string {
 
 export function ConstructionLog({ inputRef }: ConstructionLogProps) {
   const transport = useMemo(() => new DefaultChatTransport({ api: "/api/chat" }), []);
-  const { messages, sendMessage, status } = useChat({
+  const { messages, sendMessage, status, error, regenerate } = useChat({
     messages: [],
     transport,
   });
@@ -252,6 +253,37 @@ export function ConstructionLog({ inputRef }: ConstructionLogProps) {
                     }
                     text={creatingRoadmap ? "Creating roadmap..." : "Thinking....."}
                   />
+
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      className="max-w-3xl mx-auto w-full px-4"
+                    >
+                      <div className="flex flex-col items-center gap-4 p-6 rounded-2xl border border-red-500/20 bg-red-500/5 backdrop-blur-md">
+                        <div className="h-10 w-10 rounded-full bg-red-500/10 flex items-center justify-center border border-red-500/20">
+                          <Icons.alertCircle className="h-5 w-5 text-red-400 group-hover:scale-110 transition-transform" />
+                        </div>
+                        <div className="text-center space-y-1">
+                          <h4 className="text-sm font-semibold text-red-200">Construction Interrupted</h4>
+                          <p className="text-xs text-red-300/60 max-w-[280px] leading-relaxed">
+                            {error.message.includes('API key')
+                              ? "The Architect is missing its blueprints (API Key). Please check your configuration."
+                              : "The Architect is exhausted (Quota Exceeded) or hit a snag. Let's try again in a moment."}
+                          </p>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => regenerate()}
+                          className="bg-red-500/10 border-red-500/20 text-red-200 hover:bg-red-500/20 hover:border-red-500/30 transition-all duration-200 ease-[var(--ease-out)] active:scale-[0.97]"
+                        >
+                          <Icons.rotateCw className="h-3.5 w-3.5 mr-2" />
+                          Retry Construction
+                        </Button>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
               )}
             </AnimatePresence>

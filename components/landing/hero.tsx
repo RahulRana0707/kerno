@@ -19,7 +19,7 @@ export function Hero() {
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2, duration: 0.8 }}
+                transition={{ delay: 0.1, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                 className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/40 bg-background/50 px-3 py-1 text-sm text-muted-foreground backdrop-blur-md"
             >
                 <Icons.sparkles className="h-3.5 w-3.5 text-primary" />
@@ -30,7 +30,7 @@ export function Hero() {
             <motion.h1
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.8, ease: "circOut" }}
+                transition={{ delay: 0.2, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                 className="max-w-4xl text-5xl font-medium tracking-tight sm:text-7xl mb-8"
             >
                 Learning is a <br className="hidden sm:block" />
@@ -38,9 +38,9 @@ export function Hero() {
             </motion.h1>
 
             <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 1 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                 className="max-w-2xl text-lg text-muted-foreground mb-12 leading-relaxed"
             >
                 Stop inferring structure from video playlists. <br className="hidden sm:block" />
@@ -52,7 +52,7 @@ export function Hero() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.8 }}
+                    transition={{ delay: 0.4, duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
                     className="relative group w-full h-full"
                 >
                     {/* The Moving Border Background Layer - Only visible when NOT focused */}
@@ -93,7 +93,7 @@ export function Hero() {
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ delay: 1, duration: 1 }}
+                    transition={{ delay: 0.5, duration: 1 }}
                     className="mt-6 flex flex-wrap justify-center gap-3 text-sm text-muted-foreground"
                 >
                     <span className="opacity-50">Try:</span>
